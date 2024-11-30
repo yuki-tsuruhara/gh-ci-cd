@@ -1,0 +1,6 @@
+name: github_token
+on: push
+jobs:
+  runs-on: ubuntu-latest
+  steps:
+    - run: echo ${{secrets.GITHUB_TOKEN}}
