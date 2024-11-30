@@ -1,0 +1,14 @@
+// 基本の書き方
+name: 'actions-name'
+on: 'actions-method' // push
+jobs:
+  share:
+
+# permissonsを記載した場合はcontentsの記載が必須
+# permissionsを記載しない場合は、デフォルトでcontentsがreadとなっている
+permissions: // GITHUB_TOKENの権限指定
+  pull-requests: write // PRに対する書き込み
+  contents: read // ソースコードの読み込み
+
+# stepsに関するメモ
+uses: actions/checkout@v4 # ソースコードへのアクセス許可：明示的に記載が必要
