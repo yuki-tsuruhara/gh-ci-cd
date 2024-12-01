@@ -79,5 +79,19 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }} # 同じワークフローかつ同じブランチ名であれば停止する
   calcel-in-progress: true
 
+# job間のデータ受け渡し
+# ステップにIDキーを設定
+# ステップ内でGITHUB_OUTPUTに環境変数を書き出す
+# 出力値をoutputsにセット
+steps:
+  - id: generate
+    run: echo "result=Hello" >> "${GITHUB_OUTPUT}"
+outputs:
+  result: ${{ steps.generate.outputs.result }}
 
-
+# 受け取り側の定義
+need: [before]
+steps:
+  - env:
+      RESULT: ${{ needs.before.outputs.result }}
+    run: echo "${RESULT}"
