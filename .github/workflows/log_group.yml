@@ -5,6 +5,6 @@ jobs:
     runs-on: ubuntu
     steps:
       - run: |
-        echo "::group::environment-log-group"
-        printenv
-        echo "::endgroup::"
+          echo "::group::environment-log-group"
+          printenv
+          echo "::endgroup::"
