@@ -2,7 +2,7 @@ name: log_group
 on: push
 jobs:
   log_group:
-    runs-on: ubuntu
+    runs-on: ubuntu-latest
     steps:
       - run: |
           echo "::group::environment-log-group"
