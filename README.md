@@ -93,3 +93,6 @@ set -x
 ::group::<group-name>
 ::endgroup::
 ```
+
+ログの手動マスク
+- secretsの情報は自動でマスクされるが、手動でマスクすることもできる
