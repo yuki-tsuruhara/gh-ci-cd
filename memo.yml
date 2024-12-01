@@ -36,6 +36,13 @@ jobs:
     timeout-minutes: 5 # 実行時間が5分を超えたら終了する
     steps:
       - uses: actions/checkout@v4
+      - shell: bash
+        run: echo "${SHELL}" # エラーが発見しやすくなるので、シェル指定は明示的にすべき
+        # デフォルトと指定した場合ではシェルの起動方法が異なる
+        # default：bash -e {0}
+        # non-default:bash --noprofile --norc -eo pipefail {0}
+        # pipefailが重要でパイプエラーを吐き出してくれる
+        # steps節に逐一記載するのは面倒なので、後に記載する「defaults」で指定する
 
 # permissonsを記載した場合はcontentsの記載が必須
 # permissionsを記載しない場合は、デフォルトでcontentsがreadとなっている

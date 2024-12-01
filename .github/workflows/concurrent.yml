@@ -1,0 +1,8 @@
+name: concurrency
+on: push
+jobs:
+  concurrent:
+    concurrency: ${{ github.workflow }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: sleep 120
