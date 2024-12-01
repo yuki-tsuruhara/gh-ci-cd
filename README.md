@@ -95,4 +95,19 @@ set -x
 ```
 
 ログの手動マスク
-- secretsの情報は自動でマスクされるが、手動でマスクすることもできる
+
+- secrets の情報は自動でマスクされるが、手動でマスクすることもできる
+
+アノテーション
+
+- ラベルをつけることができる
+
+```
+steps:
+    - run: echo "::error::This is an error"
+    - run: echo "::warning::This is an warning"
+    - run: echo "::notice::This is an notice"
+```
+
+ジョブサマリー
+- テーブルやリスト・メトリクスなどの情報量の多い出力を可能にする
