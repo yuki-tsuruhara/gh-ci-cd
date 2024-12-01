@@ -2,7 +2,9 @@ name: concurrency
 on: push
 jobs:
   concurrent:
-    concurrency: ${{ github.workflow }}
+    concurrency:
+      group: ${{ github.workflow }}
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     steps:
       - run: sleep 120
