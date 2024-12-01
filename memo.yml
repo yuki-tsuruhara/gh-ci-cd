@@ -1,8 +1,41 @@
-// 基本の書き方
+# workflow name
 name: 'actions-name'
+
+# 実行方法
 on: 'actions-method' // push
+on:
+  pull-request:
+    paths: ['go/**/*.go'] # イベントフィルタリング：goファイルに変更があればCIを実行する
+
+# paths 指定したファイルパスのみ
+# paths-ignore 指定したファイルパス以外
+# branches 指定したブランチ
+# branches-ignore 指定したブランチ以外
+# tags 指定したGitタグ
+# tags-ignore 指定したGitタグ以外
+# ignore系と併用はできない、複数指定した場合はAND条件
+
+# アクティビティタイプ：イペントの種類に応じた制御を可能にする
+# 逆に何も指定しなければ、全てのイベントに対して実行する
+on: issues:
+  types: [opened, edited]
+
+# pull_requestだけデフォルトの挙動が異なる
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+# jobs
 jobs:
   share:
+
+#lint
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5 # 実行時間が5分を超えたら終了する
+    steps:
+      - uses: actions/checkout@v4
 
 # permissonsを記載した場合はcontentsの記載が必須
 # permissionsを記載しない場合は、デフォルトでcontentsがreadとなっている
@@ -12,3 +45,30 @@ permissions: // GITHUB_TOKENの権限指定
 
 # stepsに関するメモ
 uses: actions/checkout@v4 # ソースコードへのアクセス許可：明示的に記載が必要
+
+# セットアップアクション
+- uses: actions/setup-go@v5
+  with:
+    go-version: '1.22'
+
+# nodejsの場合
+- uses: actions/setup-node@v4
+  with:
+    node-version: '20'
+    cache: npm
+
+# バージョンファイルを指定
+- uses: actions/setup-go@v5
+  with:
+    go-version-file: .go-version
+
+# defaults：パイプエラーが拾えるようにBash起動オプションを変更
+defaults:
+  run:
+    shell: bash
+
+# 自動キャンセル：コミット追加時に、古いワークフローを自動キャンセル
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  calcel-in-progress: true
+
