@@ -1,0 +1,10 @@
+name: log_group
+on: push
+jobs:
+  log_group:
+    runs-on: ubuntu
+    steps:
+      - run: |
+        echo "::group::environment-log-group"
+        printenv
+        echo "::endgroup::"

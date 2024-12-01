@@ -76,3 +76,20 @@
 ```
 ::workflow-command parameter1=<data1>, parameter2=<data2>::<command value>
 ```
+
+Bash トレーシング
+
+- 通常のデバックログは流量が多いので、よりシンプルにできる
+
+```
+set -x
+```
+
+ログのグループ化
+
+- ログを意味のある単位にまとめる
+
+```
+::group::<group-name>
+::endgroup::
+```
