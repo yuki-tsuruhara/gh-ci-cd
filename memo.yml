@@ -95,3 +95,12 @@ steps:
   - env:
       RESULT: ${{ needs.before.outputs.result }}
     run: echo "${RESULT}"
+
+# matrix
+# 複数のOS、versionで実行したい場合に設定
+jobs:
+  print:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, window-latest, macos-latest]
+        version: [18,20]
