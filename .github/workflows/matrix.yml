@@ -2,9 +2,9 @@ name: strategy
 on: push
 jobs:
   strategy:
-    matrics:
+    matrix:
       os: [ubuntu-latest, windows-latest, macos-latest]
-    runs-on: ${{matrics.os}}
+    runs-on: ${{matrix.os}}
     steps:
       - run: echo ${RUNNER_OS}
         shell: bash
