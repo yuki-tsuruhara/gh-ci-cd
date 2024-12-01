@@ -76,7 +76,7 @@ defaults:
 
 # 自動キャンセル：コミット追加時に、古いワークフローを自動キャンセル
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }} # 同じワークフローかつ同じブランチ名であれば停止する
   calcel-in-progress: true
 
 
