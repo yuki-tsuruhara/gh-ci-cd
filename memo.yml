@@ -104,3 +104,13 @@ jobs:
       matrix:
         os: [ubuntu-latest, window-latest, macos-latest]
         version: [18,20]
+
+# キャッシュ
+- uses: actions/cache@v4
+  with:
+    key: test-${{runner.os}}-${{github.sha}} # キャッシュの生成と保存に関する識別子
+    path: ${{github.workspace}}/dummy # キャッシュ対象のディレクトリパス
+    restore-keys: | # キャッシュミス時のリストアキーを探す
+      test-${{runner.os}}-
+    # keyで定義したキャッシュキーと一致するものを探す
+    # 上記がない場合、リストキーの定義に一致するキャッシュを探す
