@@ -1,0 +1,116 @@
+# workflow name
+name: 'actions-name'
+
+# 実行方法
+on: 'actions-method' // push
+on:
+  pull-request:
+    paths: ['go/**/*.go'] # イベントフィルタリング：goファイルに変更があればCIを実行する
+
+# paths 指定したファイルパスのみ
+# paths-ignore 指定したファイルパス以外
+# branches 指定したブランチ
+# branches-ignore 指定したブランチ以外
+# tags 指定したGitタグ
+# tags-ignore 指定したGitタグ以外
+# ignore系と併用はできない、複数指定した場合はAND条件
+
+# アクティビティタイプ：イペントの種類に応じた制御を可能にする
+# 逆に何も指定しなければ、全てのイベントに対して実行する
+on: issues:
+  types: [opened, edited]
+
+# pull_requestだけデフォルトの挙動が異なる
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+# jobs
+jobs:
+  share:
+
+#lint
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5 # 実行時間が5分を超えたら終了する
+    steps:
+      - uses: actions/checkout@v4
+      - shell: bash
+        run: echo "${SHELL}" # エラーが発見しやすくなるので、シェル指定は明示的にすべき
+        # デフォルトと指定した場合ではシェルの起動方法が異なる
+        # default：bash -e {0}
+        # non-default:bash --noprofile --norc -eo pipefail {0}
+        # pipefailが重要でパイプエラーを吐き出してくれる
+        # steps節に逐一記載するのは面倒なので、後に記載する「defaults」で指定する
+
+# permissonsを記載した場合はcontentsの記載が必須
+# permissionsを記載しない場合は、デフォルトでcontentsがreadとなっている
+permissions: // GITHUB_TOKENの権限指定
+  pull-requests: write // PRに対する書き込み
+  contents: read // ソースコードの読み込み
+
+# stepsに関するメモ
+uses: actions/checkout@v4 # ソースコードへのアクセス許可：明示的に記載が必要
+
+# セットアップアクション
+- uses: actions/setup-go@v5
+  with:
+    go-version: '1.22'
+
+# nodejsの場合
+- uses: actions/setup-node@v4
+  with:
+    node-version: '20'
+    cache: npm
+
+# バージョンファイルを指定
+- uses: actions/setup-go@v5
+  with:
+    go-version-file: .go-version
+
+# defaults：パイプエラーが拾えるようにBash起動オプションを変更
+defaults:
+  run:
+    shell: bash
+
+# 自動キャンセル：コミット追加時に、古いワークフローを自動キャンセル
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }} # 同じワークフローかつ同じブランチ名であれば停止する
+  calcel-in-progress: true
+
+# job間のデータ受け渡し
+# ステップにIDキーを設定
+# ステップ内でGITHUB_OUTPUTに環境変数を書き出す
+# 出力値をoutputsにセット
+steps:
+  - id: generate
+    run: echo "result=Hello" >> "${GITHUB_OUTPUT}"
+outputs:
+  result: ${{ steps.generate.outputs.result }}
+
+# 受け取り側の定義
+need: [before]
+steps:
+  - env:
+      RESULT: ${{ needs.before.outputs.result }}
+    run: echo "${RESULT}"
+
+# matrix
+# 複数のOS、versionで実行したい場合に設定
+jobs:
+  print:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, window-latest, macos-latest]
+        version: [18,20]
+
+# キャッシュ
+- uses: actions/cache@v4
+  with:
+    key: test-${{runner.os}}-${{github.sha}} # キャッシュの生成と保存に関する識別子
+    path: ${{github.workspace}}/dummy # キャッシュ対象のディレクトリパス
+    restore-keys: | # キャッシュミス時のリストアキーを探す
+      test-${{runner.os}}-
+    # keyで定義したキャッシュキーと一致するものを探す
+    # 上記がない場合、リストキーの定義に一致するキャッシュを探す
