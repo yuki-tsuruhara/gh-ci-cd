@@ -1,0 +1,16 @@
+name: include-matrix
+on: push
+jobs:
+  print:
+    strategy:
+      include:
+        - os: ubuntu-latest
+          version: 20
+        - os: window-latest
+          version: 18
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.version }}
+      - run: echo "${RUNNER_OS}" && node --version

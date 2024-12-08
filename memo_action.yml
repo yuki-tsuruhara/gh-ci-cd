@@ -1,0 +1,32 @@
+name: dump
+description: |
+  環境変数とGithubコンテキストを出力します
+inputs: # アクションの入力パラメータ 複数指定ができる
+  enable-context: # workflowから実行する際に必要となるID
+    default: true
+    required: false
+    description: コンテキストをログ出力するか
+outputs:
+  demped-date: # 出力ID
+    value: ${{ steps.current.outputs.date }} # 出力値
+    description: dump date
+runs: # actionのメインロジック
+  using: composite # 実装方式 compositeだけロジックを直接記載する
+  steps:
+    - run: printenv | sort
+      shell: bash
+
+# javascript action
+runs:
+  using: node20
+  main: main.js
+
+# docker container action
+runs:
+  using: docker
+  image: Dockerfile
+
+# スクリプトの切り出し
+steps:
+  - run: "${GITHUB_ACTION_PATH}/script.sh"
+    shell: bash
