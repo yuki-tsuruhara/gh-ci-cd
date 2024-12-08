@@ -114,3 +114,9 @@ jobs:
       test-${{runner.os}}-
     # keyで定義したキャッシュキーと一致するものを探す
     # 上記がない場合、リストキーの定義に一致するキャッシュを探す
+
+# dependency-type
+if: ${{ steps.meta.outputs.dependency-type == 'direct:development' && steps.meta.outputs.update-type != 'version-update:semver-major' }}
+# direct:production 本番環境向けの依存関係
+# direct:development 開発環境向けの依存関係
+# indirect 推移的な依存関係
