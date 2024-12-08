@@ -1,0 +1,15 @@
+name: exam_env
+on: push
+jobs:
+  exam-env:
+    runs-on: ubuntu-latest
+    steps:
+      - name: set env
+        env:
+          GITHUB_EVENT_PATH: ${{ github.event_path }}
+        run: | 
+          echo "GITHUB_EVENT_PATH=${GITHUB_EVENT_PATH}" >> $GITHUB_ENV
+      - name: echo env
+        run: |
+          echo "${GITHUB_EVENT_PATH}"
+    
